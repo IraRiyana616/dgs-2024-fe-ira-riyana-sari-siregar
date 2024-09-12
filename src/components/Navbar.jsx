@@ -2,7 +2,7 @@ import { useState } from 'react';
 import logo from '/src/assets/icons/logo.png';
 import images from '/src/assets/images/wallet.png';
 import '/src/index.css';
-import Transactions from '/src/components/Transaction';
+import Transactions from '/src/components/transaction/Transaction';
 
 const Navbar = () => {
   const [activeTab, setActiveTab] = useState('dates');

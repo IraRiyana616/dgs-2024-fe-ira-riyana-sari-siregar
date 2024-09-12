@@ -1,8 +1,8 @@
 import React from 'react';
-import Wallets from '/src/components/Wallets';
+import Wallets from '/src/components/wallet/Wallets';
 
 import { GrNotification } from 'react-icons/gr';
-import Category from '/src/components/Category';
+import Category from '/src/components/category/Category';
 
 const Sidebar = () => {
   return (
@@ -19,8 +19,6 @@ const Sidebar = () => {
           <div>Hi, Ira Riyana</div>
         </div>
       </div>
-      {/* Main Content */}
-
       <Wallets />
       <Category />
     </div>
