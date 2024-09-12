@@ -1,21 +1,21 @@
 import './App.css';
-import Navbar from '/src/components/Navbar';
-
-import Sidebar from '/src/components/Sidebar';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
 
 function App() {
   return (
-    <div className="flex w-full h-screen justify-between">
-      {/* Navbar dengan lebar 65% */}
-      <div className="w-[68%]">
-        <Navbar />
-      </div>
+    <Router>
+      <div className="flex w-full h-screen justify-between">
+        <div className="w-[68%]">
+          <Navbar />
+        </div>
 
-      {/* Sidebar dengan lebar 35% */}
-      <div className="w-[32%] bg-gray-100">
-        <Sidebar />
+        <div className="w-[32%] bg-gray-100">
+          <Sidebar />
+        </div>
       </div>
-    </div>
+    </Router>
   );
 }
 

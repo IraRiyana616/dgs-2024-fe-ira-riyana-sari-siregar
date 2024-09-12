@@ -1,5 +1,80 @@
 import React, { useState, useEffect } from 'react';
 
+const Modal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  newTransaction,
+  setNewTransaction,
+}) => {
+  if (!isOpen) return null;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-lg font-bold mb-4">Add Transaction</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 gap-4 mb-4">
+            <input
+              type="text"
+              placeholder="Category"
+              value={newTransaction.category}
+              onChange={(e) =>
+                setNewTransaction({
+                  ...newTransaction,
+                  category: e.target.value,
+                })
+              }
+              className="p-2 border border-gray-300 rounded"
+              required
+            />
+            <input
+              type="date"
+              value={newTransaction.date}
+              onChange={(e) =>
+                setNewTransaction({ ...newTransaction, date: e.target.value })
+              }
+              className="p-2 border border-gray-300 rounded"
+              required
+            />
+            <input
+              type="number"
+              placeholder="Amount"
+              value={newTransaction.amount}
+              onChange={(e) =>
+                setNewTransaction({
+                  ...newTransaction,
+                  amount: parseFloat(e.target.value),
+                })
+              }
+              className="p-2 border border-gray-300 rounded"
+              required
+            />
+          </div>
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-2 bg-gray-300 text-gray-700 rounded mr-2">
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="p-2 bg-blue-500 text-white rounded">
+              Add Transaction
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 const Transactions = () => {
   const [transactions, setTransactions] = useState([
     {
@@ -11,7 +86,7 @@ const Transactions = () => {
     {
       id: 2,
       category: 'Clothes & Shopping',
-      date: '25 September 201',
+      date: '25 September 2019',
       amount: -2357,
     },
     {
@@ -30,6 +105,12 @@ const Transactions = () => {
 
   const [totalValue, setTotalValue] = useState(0);
   const [numberOfTransactions, setNumberOfTransactions] = useState(0);
+  const [newTransaction, setNewTransaction] = useState({
+    category: '',
+    date: '',
+    amount: 0,
+  });
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const calculateTotalValue = () => {
     let sum = 0;
@@ -51,26 +132,62 @@ const Transactions = () => {
     calculateNumberOfTransactions();
   };
 
-  const handleBookmarkTransaction = (id) => {
-    // Implement bookmark functionality here
+  const handleAddTransaction = () => {
+    const newId = transactions.length
+      ? Math.max(transactions.map((t) => t.id)) + 1
+      : 1;
+    setTransactions([...transactions, { id: newId, ...newTransaction }]);
+    setNewTransaction({ category: '', date: '', amount: 0 });
+    setIsModalOpen(false);
   };
 
   useEffect(() => {
     calculateTotalValue();
     calculateNumberOfTransactions();
-  }, []);
+  }, [transactions]);
 
   return (
-    <div className="container mx-auto  p-10">
-      <h1 className="text-custom24 font-bold mb-4">January 15 2020</h1>
-      <div className="flex justify-between mb-4">
-        <p className="text-gray-500 text-custom16">
-          Number of transaction: {numberOfTransactions}
-        </p>
-        <p className="text-gray-500 text-custom16">
-          Value: ${totalValue.toFixed(2)}
-        </p>
+    <div className="container mx-auto p-10">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-custom24 font-bold">January 15 2020</h1>
+        <button
+          className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+          onClick={() => setIsModalOpen(true)}>
+          <svg
+            className="w-4 h-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            />
+          </svg>
+          Add Wallet
+        </button>
       </div>
+
+      <div className="flex justify-between mb-4 items-center">
+        <p className="text-gray-500 text-custom16">
+          Number of transactions: {numberOfTransactions}
+        </p>
+        <div className="flex items-center ml-auto">
+          <p className="text-gray-500 text-custom16 ml-4">
+            Value: ${totalValue.toFixed(2)}
+          </p>
+        </div>
+      </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleAddTransaction}
+        newTransaction={newTransaction}
+        setNewTransaction={setNewTransaction}
+      />
       <div className="grid grid-cols-1 gap-4">
         {transactions.map((transaction) => (
           <div
@@ -78,6 +195,7 @@ const Transactions = () => {
             className="bg-gray-100 shadow-md rounded-lg p-4">
             <div className="flex items-center">
               <div className="flex-shrink-0">
+                {/* Icon SVGs based on category */}
                 {transaction.category === 'Restaurants & Cafe' && (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -147,25 +265,8 @@ const Transactions = () => {
             <div className="flex justify-end mt-2">
               <p className="text-gray-600 font-medium">${transaction.amount}</p>
               <button
-                onClick={() => handleBookmarkTransaction(transaction.id)}
-                className="ml-4 p-2 rounded-md bg-gray-200 text-gray-600">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                  />
-                </svg>
-              </button>
-              <button
                 onClick={() => handleDeleteTransaction(transaction.id)}
-                className="ml-4 p-2 rounded-md bg-gray-200 text-gray-600">
+                className="ml-4 p-2 rounded-md bg-gray-200 text-gray-600 justify-end">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5"

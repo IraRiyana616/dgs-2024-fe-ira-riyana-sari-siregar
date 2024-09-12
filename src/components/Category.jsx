@@ -6,7 +6,6 @@ import {
   FaHeadphonesAlt,
   FaShoppingBag,
 } from 'react-icons/fa';
-import { AiOutlineWallet } from 'react-icons/ai';
 
 const Category = () => {
   const [categories, setCategories] = useState([
@@ -142,7 +141,6 @@ const Category = () => {
     }
   };
 
-  // Filter categories to exclude those with empty amount and date
   const filteredCategories = categories.filter(
     (category) =>
       (category.amount !== null && category.amount !== '') ||

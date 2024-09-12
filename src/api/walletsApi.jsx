@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://digistar-demo-be.vercel.app/api';
+const BASE_URL = 'https://digistar-demo-be.vercel.app/api/wallets';
 const WALLETS_ENDPOINT = '/wallets';
 
 const getUrl = (endpoint) => `${BASE_URL}${endpoint}`;
 
 const getWallets = async () => {
   try {
-    const response = await axios.get(getUrl(WALLETS_ENDPOINT));
+    const response = await axios.get(`${BASE_URL}/wallets`);
     return response.data;
   } catch (error) {
     console.error('Error fetching wallets:', error);
